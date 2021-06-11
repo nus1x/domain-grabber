@@ -15,20 +15,38 @@ Github: @ceritarommy
 Instagram: @rommymaul
     """)
 
-def grabDomain(url):
+def grabDomain(pages):
 
     global domain_file
 
     try:
-        response = requests.get(url, timeout=5, verify=False)
-        grab_domain = re.findall('<td class=special style="width: 10px;padding:0 5px;"><td>(.*?)<td>', response.text)
+        mirror = [
+            "https://zone-d.org/mirror/archive/",
+            "https://mirror-h.org/archive/page/"
+        ]
+        total_mirror = len(mirror)
+        
+        for x in range(0, total_mirror):
+            url = f"{mirror[x]}{pages}"
+            header = {"User-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"}
+            response = requests.get(url, headers=header, timeout=5, verify=False)
+            grab_zone_d = re.findall('<td class=special style="width: 10px;padding:0 5px;"><td>(.*?)<td>', response.text)
+            grab_mirror_h = re.findall('<td style="word-break: break-word;white-space: normal;min-width: 300px;"><?a?.+\>(.*?)</a></td>', response.text)
 
-        for domain in grab_domain:
-            domain = domain.split("/")
-            save = open(domain_file, "a")
-            save.write(f"{domain[0]}\n")
-            save.close()
-            print(domain[0])
+            for zone_d in grab_zone_d:
+                zone_d = zone_d.split("/")
+                save = open(domain_file, "a")
+                save.write(f"{zone_d[0]}\n")
+                save.close()
+                print(zone_d[0])
+
+            for mirror_h in grab_mirror_h:
+                mirror_h = mirror_h.split("/")
+                save = open(domain_file, "a")
+                save.write(f"{mirror_h[2]}\n")
+                save.close()
+                print(mirror_h[2])
+
     except:
         pass
 
@@ -39,8 +57,8 @@ print("\n")
 
 threads = []
 for x in range(0, total_pages):
-    url = f"https://zone-d.org/mirror/archive/{x}"
-    grab = threading.Thread(target=grabDomain, args=(url,))
+    pages = x
+    grab = threading.Thread(target=grabDomain, args=(pages,))
     threads.append(grab)
 
 for grab in threads:
