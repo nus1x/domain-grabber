@@ -37,9 +37,9 @@ def grabDomain(pages):
         ]
 
         for mirror in mirror_list:
+            # requests
             page = pages + 1
             url = f"{mirror}{page}"
-            # requests
             header = {"User-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"}
             response = requests.get(url, headers=header, timeout=20, verify=False)
 
