@@ -29,6 +29,7 @@ def grabDomain(pages):
     global domain_file
 
     try:
+        
         # mirror list
         mirror_list = [
             "https://mirror-h.org/archive/page/",
@@ -37,6 +38,7 @@ def grabDomain(pages):
         ]
 
         for mirror in mirror_list:
+
             # requests
             page = pages + 1
             url = f"{mirror}{page}"
