@@ -31,9 +31,9 @@ def grabDomain(pages):
     try:
         # mirror list
         mirror_list = [
-            "https://zone-d.org/mirror/archive/",
             "https://mirror-h.org/archive/page/",
-            "https://zone-xsec.com/archive/page="
+            "https://zone-xsec.com/archive/page=",
+            "https://zone-d.org/mirror/archive/"
         ]
 
         for mirror in mirror_list:
@@ -94,7 +94,7 @@ for x in range(0, total_pages):
 for grab in threads:
     grab.start()
 
-time.sleep(3)
+time.sleep(20)
 
 for grab in threads:
     grab.join()
