@@ -29,23 +29,19 @@ def grabDomain(pages):
     global domain_file
 
     try:
-
         # mirror list
-        mirror = [
+        mirror_list = [
             "https://zone-d.org/mirror/archive/",
             "https://mirror-h.org/archive/page/",
             "https://zone-xsec.com/archive/page="
         ]
 
-        # total mirror list
-        total_mirror = len(mirror)
-        
-        for x in range(0, total_mirror):
-
+        for mirror in mirror_list:
+            page = pages + 1
+            url = f"{mirror}{page}"
             # requests
-            url = f"{mirror[x]}{pages}"
             header = {"User-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"}
-            response = requests.get(url, headers=header, timeout=5, verify=False)
+            response = requests.get(url, headers=header, timeout=20, verify=False)
 
             # regex
             grab_zone_d = re.findall('<td class=special style="width: 10px;padding:0 5px;"><td>(.*?)<td>', response.text)
@@ -70,12 +66,15 @@ def grabDomain(pages):
                 print(mirror_h[2])
             
             # grab from zone-xsec
-            for zxsec in grab_zxsec:
-                zxsec = zxsec.split("/")
-                save = open(domain_file, "a")
-                save.write(f"{zxsec[0]}\n")
-                save.close()
-                print(zxsec[0])
+            if "For Archive Security" in response.text:
+                pass
+            else:
+                for zxsec in grab_zxsec:
+                    zxsec = zxsec.split("/")
+                    save = open(domain_file, "a")
+                    save.write(f"{zxsec[0]}\n")
+                    save.close()
+                    print(zxsec[0])
 
     except:
         pass
