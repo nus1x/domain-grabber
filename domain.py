@@ -45,38 +45,42 @@ def grabDomain(pages):
             header = {"User-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36"}
             response = requests.get(url, headers=header, timeout=20, verify=False)
 
-            # regex
-            grab_zone_d = re.findall('<td class=special style="width: 10px;padding:0 5px;"><td>(.*?)<td>', response.text)
-            grab_mirror_h = re.findall('<td style="word-break: break-word;white-space: normal;min-width: 300px;"><?a?.+\>(.*?)</a></td>', response.text)
-            grab_zxsec = re.findall('''            <td></td>
-            <td>(.*?)</td>''', response.text)
+            # grab domain
+            if "zone-d" in url:
+                grab_domain = re.findall('<td class=special style="width: 10px;padding:0 5px;"><td>(.*?)<td>', response.text)
 
-            # grab from zone-d
-            for zone_d in grab_zone_d:
-                zone_d = zone_d.split("/")
-                save = open(domain_file, "a")
-                save.write(f"{zone_d[0]}\n")
-                save.close()
-                print(zone_d[0])
-
-            # grab from mirror-h
-            for mirror_h in grab_mirror_h:
-                mirror_h = mirror_h.split("/")
-                save = open(domain_file, "a")
-                save.write(f"{mirror_h[2]}\n")
-                save.close()
-                print(mirror_h[2])
-            
-            # grab from zone-xsec
-            if "For Archive Security" in response.text:
-                pass
-            else:
-                for zxsec in grab_zxsec:
-                    zxsec = zxsec.split("/")
+                for domain in grab_domain:
+                    domain = domain.split("/")
                     save = open(domain_file, "a")
-                    save.write(f"{zxsec[0]}\n")
+                    save.write(f"{domain[0]}\n")
                     save.close()
-                    print(zxsec[0])
+                    print(domain[0])
+
+            elif "mirror-h" in url:
+                grab_domain = re.findall('<td style="word-break: break-word;white-space: normal;min-width: 300px;"><?a?.+\>(.*?)</a></td>', response.text)
+                
+                for domain in grab_domain:
+                    domain = domain.split("/")
+                    save = open(domain_file, "a")
+                    save.write(f"{domain[2]}\n")
+                    save.close()
+                    print(domain[2])
+
+            elif "zone-xsec" in url:
+                grab_domain = re.findall('''            <td></td>
+                <td>(.*?)</td>''', response.text)
+                
+                if "For Archive Security" in response.text:
+                    pass
+                else:
+                    for domain in grab_domain:
+                        domain = domain.split("/")
+                        save = open(domain_file, "a")
+                        save.write(f"{domain[0]}\n")
+                        save.close()
+                        print(domain[0])
+            else:
+                pass
 
     except:
         pass
